@@ -1,12 +1,15 @@
 import datetime
 
+import django_filters
 import pandas as pd
 from django.http import JsonResponse, HttpResponse
 from drf_yasg.openapi import Schema, TYPE_OBJECT, TYPE_INTEGER
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework.generics import CreateAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView
 from rest_framework.views import APIView
 
+from apps.models import Picture
+from apps.serializers import PictureSerializer
 from apps.utils.data import data_exel
 from apps.utils.mixins import FakeDataMixin
 
@@ -94,3 +97,10 @@ class CreateFakeDataCreateAPIView(FakeDataMixin, CreateAPIView):
         df.to_excel(response, index=False)
 
         return response
+
+
+class PictureListAPIView(ListAPIView):
+    queryset = Picture.objects.all()
+    serializer_class = PictureSerializer
+    filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
+    filterset_fields = ('id',)
