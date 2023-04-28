@@ -176,3 +176,45 @@ class FakeDataMixin:
             obj = self.fake_object(i)
             data.append(list(obj.values()))
         return excel_headers, data
+
+
+class FilterMixin:
+    def _type_exchange(self, value, type):
+        if type == 'int':
+            return int(value)
+        elif type == 'float':
+            return float(value)
+        elif type == 'date':
+            return datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
+
+        raise TypeError
+
+    def _compare(self, value, op, op_value, type):
+        if op == '>':
+            return self._type_exchange(value, type) > self._type_exchange(op_value, type)
+        elif op == '>=':
+            return self._type_exchange(value, type) >= self._type_exchange(op_value, type)
+        elif op == '<':
+            return self._type_exchange(value, type) < self._type_exchange(op_value, type)
+        elif op == '<=':
+            return self._type_exchange(value, type) <= self._type_exchange(op_value, type)
+        elif op == '==':
+            return self._type_exchange(value, type) == self._type_exchange(op_value, type)
+        elif op == '!=':
+            return self._type_exchange(value, type) != self._type_exchange(op_value, type)
+        return 'Input correct logical symbol (>, >=, <, <=, ==, !=)'
+
+    def _get_type(self, name: str, value):
+        if 'time' in name.lower():
+            return 'date'
+        elif '.' in value:
+            return 'float'
+        elif name.isalnum():
+            return 'int'
+        else:
+            return 'bool'
+
+    def _filter_obj(self, row, field, op, value):
+        _type = self._get_type(field, value)
+        if row.get(field):
+            return self._compare(row.get(field), op, value, _type)
