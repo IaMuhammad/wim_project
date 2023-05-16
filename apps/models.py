@@ -1,11 +1,11 @@
 from django.db import models
 class Picture(models.Model):
-    npl = models.CharField(max_length=10)
+    npl = models.CharField()
     time = models.DateTimeField(auto_now_add=True)
-    timestamp = models.CharField(max_length=20)
+    timestamp = models.CharField()
     speed = models.FloatField()
-    fullimg = models.TextField(max_length=999_999_999_999_999, null=True, blank=True)
-    lp = models.TextField(max_length=999_999_999_999_999)
-    aux = models.TextField(max_length=999_999_999_999_999, null=True, blank=True)
-    small = models.TextField(max_length=999_999_999_999_999)
-    camera = models.CharField(max_length=25)
+    fullimg = models.TextField(null=True, blank=True)
+    lp = models.TextField()
+    aux = models.TextField(null=True, blank=True)
+    small = models.TextField()
+    camera = models.CharField()
